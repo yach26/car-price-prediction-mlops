@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Price Prediction Portal</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0b0f19;
+            --card-bg: rgba(17, 25, 40, 0.75);
+            --card-border: rgba(255, 255, 255, 0.125);
+            --primary-glow: #3b82f6;
+            --secondary-glow: #8b5cf6;
+            --accent-glow: #10b981;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(59, 130, 246, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 80%, rgba(139, 92, 246, 0.15) 0px, transparent 50%);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+
+        .result-card {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 16px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .result-card h2 {
+            color: #34d399;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .result-card .price {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #ffffff;
+            margin-top: 0.5rem;
+            text-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 1.5rem;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 768px) {
+            .form-group.full-width {
+                grid-column: span 1;
+            }
+        }
+
+        label {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        input, select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            color: var(--text-main);
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-glow);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        option {
+            background-color: #111827;
+            color: var(--text-main);
+        }
+
+        .btn-submit {
+            grid-column: span 2;
+            background: linear-gradient(135deg, var(--primary-glow) 0%, var(--secondary-glow) 100%);
+            border: none;
+            border-radius: 14px;
+            padding: 1rem;
+            color: #ffffff;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+            margin-top: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 768px) {
+            .btn-submit {
+                grid-column: span 1;
+            }
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+            filter: brightness(1.1);
+        }
+
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        footer {
+            margin-top: 2rem;
+            text-align: center;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Car Price Predictor</h1>
+            <p class="subtitle">Enter the specifications of the vehicle to obtain the market valuation</p>
+        </header>
+
+        {% if result %}
+        <div class="result-card" id="result-card">
+            <h2>Estimated Value</h2>
+            <div class="price">₹{{ result }}</div>
+        </div>
+        {% endif %}
+
+        <form action="/predict" method="post">
+            <div class="form-grid">
+                
+                <!-- Make -->
+                <div class="form-group">
+                    <label for="make">Make</label>
+                    <select name="make" id="make" required>
+                        <option value="" disabled selected>Select Make</option>
+                        <option value="Acura">Acura</option>
+                        <option value="Audi">Audi</option>
+                        <option value="BMW">BMW</option>
+                        <option value="Buick">Buick</option>
+                        <option value="Cadillac">Cadillac</option>
+                        <option value="Chevrolet">Chevrolet</option>
+                        <option value="Chrysler">Chrysler</option>
+                        <option value="Dodge">Dodge</option>
+                        <option value="Ford">Ford</option>
+                        <option value="GMC">GMC</option>
+                        <option value="Genesis">Genesis</option>
+                        <option value="Honda">Honda</option>
+                        <option value="Hyundai">Hyundai</option>
+                        <option value="INFINITI">INFINITI</option>
+                        <option value="Jaguar">Jaguar</option>
+                        <option value="Jeep">Jeep</option>
+                        <option value="Kia">Kia</option>
+                        <option value="Land Rover">Land Rover</option>
+                        <option value="Lexus">Lexus</option>
+                        <option value="Lincoln">Lincoln</option>
+                        <option value="Mazda">Mazda</option>
+                        <option value="Mercedes-Benz">Mercedes-Benz</option>
+                        <option value="Nissan">Nissan</option>
+                        <option value="RAM">RAM</option>
+                        <option value="Subaru">Subaru</option>
+                        <option value="Toyota">Toyota</option>
+                        <option value="Volkswagen">Volkswagen</option>
+                        <option value="Volvo">Volvo</option>
+                    </select>
+                </div>
+
+                <!-- Model (Input with Datalist) -->
+                <div class="form-group">
+                    <label for="model">Model</label>
+                    <input type="text" name="model" id="model" list="models-list" placeholder="e.g. Grand Cherokee" required>
+                    <datalist id="models-list">
+                        <option value="Grand Cherokee"></option>
+                        <option value="Wagoneer"></option>
+                        <option value="Yukon XL"></option>
+                        <option value="Durango"></option>
+                        <option value="3500"></option>
+                        <option value="F-150"></option>
+                        <option value="Silverado 1500"></option>
+                        <option value="Equinox"></option>
+                        <option value="Explorer"></option>
+                        <option value="Tacoma"></option>
+                        <option value="Camry"></option>
+                        <option value="Accord"></option>
+                        <option value="Civic"></option>
+                        <option value="CR-V"></option>
+                        <option value="RAV4"></option>
+                    </datalist>
+                </div>
+
+                <!-- Type -->
+                <div class="form-group">
+                    <label for="type">Vehicle Type</label>
+                    <select name="type" id="type" required>
+                        <option value="New" selected>New</option>
+                    </select>
+                </div>
+
+                <!-- Year -->
+                <div class="form-group">
+                    <label for="year">Year</label>
+                    <select name="year" id="year" required>
+                        <option value="2024" selected>2024</option>
+                        <option value="2023">2023</option>
+                        <option value="2025">2025</option>
+                    </select>
+                </div>
+
+                <!-- Engine (Input with Datalist) -->
+                <div class="form-group">
+                    <label for="engine">Engine Description</label>
+                    <input type="text" name="engine" id="engine" list="engines-list" placeholder="e.g. 24V GDI DOHC Twin Turbo" required>
+                    <datalist id="engines-list">
+                        <option value="24V GDI DOHC Twin Turbo"></option>
+                        <option value="OHV"></option>
+                        <option value="16V MPFI OHV"></option>
+                        <option value="24V DDI OHV Turbo Diesel"></option>
+                        <option value="16V GDI DOHC Turbo"></option>
+                        <option value="6.2L V-8 gasoline direct injection"></option>
+                    </datalist>
+                </div>
+
+                <!-- Cylinders -->
+                <div class="form-group">
+                    <label for="cylinders">Cylinders</label>
+                    <select name="cylinders" id="cylinders" required>
+                        <option value="6" selected>6 Cylinders</option>
+                        <option value="4">4 Cylinders</option>
+                        <option value="8">8 Cylinders</option>
+                        <option value="3">3 Cylinders</option>
+                        <option value="0">Electric / 0 Cylinders</option>
+                    </select>
+                </div>
+
+                <!-- Fuel -->
+                <div class="form-group">
+                    <label for="fuel">Fuel Type</label>
+                    <select name="fuel" id="fuel" required>
+                        <option value="Gasoline" selected>Gasoline</option>
+                        <option value="Diesel">Diesel</option>
+                        <option value="Hybrid">Hybrid</option>
+                        <option value="Electric">Electric</option>
+                        <option value="E85 Flex Fuel">E85 Flex Fuel</option>
+                        <option value="Diesel (B20 capable)">Diesel (B20 capable)</option>
+                        <option value="PHEV Hybrid Fuel">PHEV Hybrid Fuel</option>
+                    </select>
+                </div>
+
+                <!-- Mileage -->
+                <div class="form-group">
+                    <label for="mileage">Mileage (miles)</label>
+                    <input type="number" step="any" name="mileage" id="mileage" placeholder="e.g. 10" required>
+                </div>
+
+                <!-- Transmission -->
+                <div class="form-group">
+                    <label for="transmission">Transmission</label>
+                    <select name="transmission" id="transmission" required>
+                        <option value="Automatic" selected>Automatic</option>
+                        <option value="Manual">Manual</option>
+                        <option value="CVT">CVT</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Trim (Input with Datalist) -->
+                <div class="form-group">
+                    <label for="trim">Trim Level</label>
+                    <input type="text" name="trim" id="trim" list="trim-list" placeholder="e.g. Laredo" required>
+                    <datalist id="trim-list">
+                        <option value="Series II"></option>
+                        <option value="Laredo"></option>
+                        <option value="Denali"></option>
+                        <option value="Pursuit"></option>
+                        <option value="Laramie"></option>
+                        <option value="Limited"></option>
+                        <option value="XLT"></option>
+                    </datalist>
+                </div>
+
+                <!-- Body Style -->
+                <div class="form-group">
+                    <label for="body">Body Style</label>
+                    <select name="body" id="body" required>
+                        <option value="SUV" selected>SUV</option>
+                        <option value="Sedan">Sedan</option>
+                        <option value="Pickup Truck">Pickup Truck</option>
+                        <option value="Hatchback">Hatchback</option>
+                        <option value="Minivan">Minivan</option>
+                        <option value="Cargo Van">Cargo Van</option>
+                        <option value="Convertible">Convertible</option>
+                        <option value="Passenger Van">Passenger Van</option>
+                    </select>
+                </div>
+
+                <!-- Doors -->
+                <div class="form-group">
+                    <label for="doors">Doors</label>
+                    <select name="doors" id="doors" required>
+                        <option value="4" selected>4 Doors</option>
+                        <option value="2">2 Doors</option>
+                        <option value="3">3 Doors</option>
+                        <option value="5">5 Doors</option>
+                    </select>
+                </div>
+
+                <!-- Exterior Color -->
+                <div class="form-group">
+                    <label for="exterior_color">Exterior Color</label>
+                    <input type="text" name="exterior_color" id="exterior_color" list="ext-colors-list" placeholder="e.g. White" required>
+                    <datalist id="ext-colors-list">
+                        <option value="White"></option>
+                        <option value="Black"></option>
+                        <option value="Silver"></option>
+                        <option value="Metallic"></option>
+                        <option value="Summit White"></option>
+                        <option value="Gray"></option>
+                        <option value="Blue"></option>
+                        <option value="Red"></option>
+                    </datalist>
+                </div>
+
+                <!-- Interior Color -->
+                <div class="form-group">
+                    <label for="interior_color">Interior Color</label>
+                    <input type="text" name="interior_color" id="interior_color" list="int-colors-list" placeholder="e.g. Black" required>
+                    <datalist id="int-colors-list">
+                        <option value="Black"></option>
+                        <option value="Global Black"></option>
+                        <option value="Teak/Light Shale"></option>
+                        <option value="Gray"></option>
+                        <option value="Beige"></option>
+                        <option value="Brown"></option>
+                    </datalist>
+                </div>
+
+                <!-- Drivetrain -->
+                <div class="form-group full-width">
+                    <label for="drivetrain">Drivetrain</label>
+                    <select name="drivetrain" id="drivetrain" required>
+                        <option value="Four-wheel Drive" selected>Four-wheel Drive</option>
+                        <option value="All-wheel Drive">All-wheel Drive</option>
+                        <option value="Front-wheel Drive">Front-wheel Drive</option>
+                        <option value="Rear-wheel Drive">Rear-wheel Drive</option>
+                    </select>
+                </div>
+
+                <button class="btn-submit" type="submit">Predict Price</button>
+            </div>
+        </form>
+    </div>
+
+    <footer>
+        &copy; 2026 Car Price Prediction Portal | End-to-End MLOps Solution
+    </footer>
+
+</body>
+</html>

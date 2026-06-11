@@ -1,5 +1,11 @@
 pandas
 numpy
-seaborn
 scikit-learn
+xgboost
+flask
+matplotlib
+seaborn
+dill
+joblib
+pytest
 -e .

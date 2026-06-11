@@ -1,0 +1,10 @@
+venv/
+.git/
+.github/
+logs/
+artifacts/*.csv
+artifacts/*.pkl
+__pycache__/
+*.pyc
+.pytest_cache/
+*.log

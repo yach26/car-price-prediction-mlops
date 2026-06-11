@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# MLOps artifacts and logs
+artifacts/
+logs/
+
